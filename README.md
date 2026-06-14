@@ -118,9 +118,7 @@ jupyter notebook student_starter_notebook.ipynb
 
 ---
 
-## 👥 Authors
+## 👤 Author
 
-**Samah Sayed** — [LinkedIn](https://www.linkedin.com/in/samahsayed55) | [GitHub](https://github.com/Samahdata)  
-**Nermine Koja**
-
-*Course 420-973-VA — Machine Learning for Data Diagnostics · Vanier College · June 2026*
+**Samah Sayed** — Data Scientist | AI & Automation  
+[LinkedIn](https://www.linkedin.com/in/samahsayed55) · [GitHub](https://github.com/Samahdata) · samah.sayed055@gmail.com
