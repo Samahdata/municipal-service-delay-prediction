@@ -101,7 +101,7 @@ cd municipal-service-delay-prediction
 pip install -r requirements.txt
 
 # 3. Run the notebook
-jupyter notebook student_starter_notebook.ipynb
+jupyter notebook municipal_service_delay_diagnostics.ipynb
 ```
 
 > ⚠️ The database file `municipal_service_diagnostics.db` must be in the same directory as the notebook.  
