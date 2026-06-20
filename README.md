@@ -73,7 +73,7 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 
 ## 📊 Model Comparison
 
-![Model Comparison Chart](https://private-user-images.githubusercontent.com/279774191/610791039-b57042b3-a381-4649-91a9-f7491d71a4ea.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODE5Njk3NDQsIm5iZiI6MTc4MTk2OTQ0NCwicGF0aCI6Ii8yNzk3NzQxOTEvNjEwNzkxMDM5LWI1NzA0MmIzLWEzODEtNDY0OS05MWE5LWY3NDkxZDcxYTRlYS5wbmciLCJjb25kaXRpb25zIjpbeyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGF0ZSI6IjIwMjYtMDYtMjAifV19.kkr91fOAeyGKYIq64L7-7Nh2R2-Jz-QsToGxeVIpc_w)
+![Model Comparison Chart](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/3#issue-4707284434)
 
 | Model | F1 (Late Class) | Recall | Notes |
 |---|---|---|---|
@@ -89,13 +89,13 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 
 ## ✅ Best Model — Confusion Matrix (Phase 9)
 
-![Confusion Matrix](https://private-user-images.githubusercontent.com/279774191/610790122-a153fc2b-18b6-4334-ba7c-d537e72320bc.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODE5Njk3MzgsIm5iZiI6MTc4MTk2OTQzOCwicGF0aCI6Ii8yNzk3NzQxOTEvNjEwNzkwMTIyLWExNTNmYzJiLTE4YjYtNDMzNC1iYTdjLWQ1MzdlNzIzMjBiYy5wbmciLCJjb25kaXRpb25zIjpbeyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGF0ZSI6IjIwMjYtMDYtMjAifV19.g7_pvVvKPePoqipo_UCesHquHvagMaDaHHA0EVtcRmM)
+![Confusion Matrix](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/1#issue-4707246136)
 
 ---
 
 ## ⚖️ Fairness Analysis — Borough Level (Phase 11)
 
-![Borough Fairness Analysis](https://private-user-images.githubusercontent.com/279774191/610790232-f733ddab-386c-4d4c-9260-6d3a6be2aa96.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODE5Njk3NDEsIm5iZiI6MTc4MTk2OTQ0MSwicGF0aCI6Ii8yNzk3NzQxOTEvNjEwNzkwMjMyLWY3MzNkZGFiLTM4NmMtNGQ0Yy05MjYwLTZkM2E2YmUyYWE5Ni5wbmciLCJjb25kaXRpb25zIjpbeyJ0eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGF0ZSI6IjIwMjYtMDYtMjAifV19.0Xv3RT9Wn66OrPzP8tLoS8b528ijRqW3ym6IU6EQS-M)
+![Borough Fairness Analysis](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/2#issue-4707249164)
 
 | Borough | Recall | F1 | Flag |
 |---|---|---|---|
