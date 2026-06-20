@@ -1,124 +1,121 @@
 # 🏙️ Municipal Service Delay Diagnostics
 
-> **Can we predict — at the moment a citizen submits a request — whether it will be completed late?**
-
-A full end-to-end machine learning diagnostic system built for a city operations team, covering data leakage auditing, multi-model comparison, fairness analysis across boroughs, and a deployable scoring pipeline.
+> **End-to-end ML diagnostic system** predicting SLA breaches in city service requests — before they happen.
 
 ---
 
-## 📌 Business Problem
+## 📋 Executive Summary
 
-The City of Saint-Florent processes ~101,000 municipal service requests per year (pothole repairs, snow removal, garbage collection, building permits, and more). Approximately **28% of requests are completed past their promised SLA deadline**, generating citizen dissatisfaction and operational inefficiency.
+Machine learning pipeline designed to identify municipal service requests at risk of missing SLA targets, built for the City of Saint-Florent's operations team.
 
-**Stakeholder:** Director of Operations  
-**Decision supported:** Flag high-risk requests *at creation time* for proactive staff intervention
-
-| Error Type | Business Impact | Severity |
-|---|---|---|
-| False Negative (miss a late request) | SLA breach, citizen complaint, no early intervention | HIGH |
-| False Positive (flag an on-time request) | Staff time wasted on unnecessary check-in | MEDIUM |
+| | |
+|---|---|
+| **Dataset** | 101K+ municipal service requests |
+| **Database** | 5 relational SQLite tables |
+| **Models Evaluated** | 6 (including AutoML) |
+| **Best Model** | Tuned Logistic Regression |
+| **F1 Score** | 0.41 (late class) |
+| **Recall** | 54% |
+| **Business Outcome** | Early identification of high-risk requests for proactive intervention |
+| **Key Risk Flag** | Saint-Laurent borough: do-not-deploy recommendation issued |
 
 ---
 
-## 🔍 Key Findings
+## 🗃️ Database Schema
 
-### ⚠️ Data Leakage Audit (Critical Step)
-Four features were identified and removed as they encode future information unavailable at intake time:
+Five relational SQLite tables joined to construct the modelling dataset:
+
+```
+service_requests     — request_id, request_type, created_date, priority, status, department, channel
+locations            — request_id, borough, neighborhood, latitude, longitude, postal_code_area
+service_targets      — request_type, service_category, expected_days (SLA definition)
+weather_daily        — date, temperature, snow_cm, rain_mm, weather_condition
+borough_profiles     — borough, population, area_km2, service_staff_count, avg_income_level
+```
+
+---
+
+## 🔧 14-Phase Pipeline
+
+| Phase | Description |
+|---|---|
+| 1 | Exploratory Data Analysis & Data Quality Audit |
+| 2 | SQL Joins across 5 relational tables |
+| 3 | Data Cleaning & Normalization |
+| 4 | Feature Engineering |
+| 5 | **Leakage Audit** — 4 features identified & removed |
+| 6 | Train/Test Split (time-ordered 83/17) |
+| 7 | Baseline Model |
+| 8 | Supervised Model Comparison (6 models) |
+| 9 | Hyperparameter Tuning |
+| 10 | Overfitting / Underfitting Analysis |
+| 11 | **Fairness Analysis** across 6 boroughs |
+| 12 | AutoML Comparison (FLAML) |
+| 13 | Cluster Analysis |
+| 14 | Final Summary & Deployment Recommendation |
+
+---
+
+## 🚨 Leakage Audit (Phase 5)
+
+Four features were identified and **removed before modeling**:
 
 | Feature | Why It Leaks |
 |---|---|
-| `status` | Updated after triage — always 'closed' in training data |
-| `assigned_team` | Assigned post-submission, not at creation |
-| `completion_days` | Derived from `closed_date` — pure future data |
-| `avg_completion_days` | Borough aggregate of outcomes — target-derived |
+| `status` | Post-creation field — unavailable at request time |
+| `assigned_team` | Assigned after submission |
+| `completion_days` | Computed from closed_date (target-derived) |
+| `avg_completion_days` | Historical average derived from target |
 
-### 🏆 Model Comparison
+Without this audit, inflated F1 scores would have produced an **undeployable model**.
 
-| Model | Accuracy | Precision | Recall | F1 |
-|---|---|---|---|---|
-| **LR Tuned ★** | 0.562 | 0.330 | **0.540** | **0.410** |
-| Logistic Regression | 0.570 | 0.332 | 0.520 | 0.405 |
-| RF Tuned | 0.579 | 0.334 | 0.495 | 0.399 |
-| AutoML (FLAML) | 0.631 | 0.310 | 0.252 | 0.278 |
-| MLP | 0.688 | 0.330 | 0.103 | 0.157 |
-| Random Forest | 0.699 | 0.340 | 0.074 | 0.121 |
-| Baseline (rule-based) | 0.718 | 0.000 | 0.000 | 0.000 |
+---
 
-**Winner: Logistic Regression (tuned, C=0.1, L2)** — highest F1 and recall on the late class, and fully explainable to non-technical city staff.
+## 📊 Model Comparison
 
-### ⚖️ Fairness Analysis — Per Borough
+| Model | F1 (Late Class) | Recall | Notes |
+|---|---|---|---|
+| **Tuned Logistic Regression** | **0.41** | **0.54** | ✅ Selected — interpretable, no leakage |
+| Tuned Random Forest | 0.399 | — | Overfitting gap ~0.07 |
+| Default Random Forest | 0.121 | — | Severe overfitting (Train F1: 0.98) |
+| AutoML (FLAML / XGBoost) | 0.275 | — | Cannot perform leakage audit |
+| Rule-Based Baseline | 0.00 | — | Predicted no requests as late |
 
-| Borough | Precision | Recall | F1 | Flag |
-|---|---|---|---|---|
-| Lasalle | 0.42 | 0.62 | 0.50 | ✅ |
-| Cote-Des-Neiges | 0.36 | 0.58 | 0.44 | ✅ |
-| Rosemont | 0.33 | 0.55 | 0.41 | ✅ |
-| Plateau | 0.31 | 0.52 | 0.39 | ✅ |
-| Verdun | 0.29 | 0.48 | 0.36 | ✅ |
-| **Saint-Laurent** | 0.25 | **0.13** | **0.18** | 🔴 HIGH RISK |
+**Why Logistic Regression over AutoML:** AutoML optimizes hyperparameters but cannot perform domain-aware leakage detection. Our manual pipeline outperformed FLAML on F1 while remaining interpretable to City operations staff.
 
-> **Do-not-use recommendation:** The City should NOT use this model to deprioritise responses in Saint-Laurent. With recall = 0.129, the model misses ~87% of true delays there. A borough-specific model or separate threshold is required before deployment in that area.
+---
+
+## ⚖️ Fairness Analysis — Borough Level (Phase 11)
+
+Model performance evaluated across all 6 boroughs:
+
+| Borough | Recall | F1 | Flag |
+|---|---|---|---|
+| Saint-Laurent | 0.129 | 0.183 | 🚨 DO NOT DEPLOY |
+| Other boroughs | 0.54 avg | 0.41 avg | ✅ Acceptable |
+
+**Saint-Laurent finding:** The model misses ~87% of true delays in this borough. Root cause: Saint-Laurent has the highest staffing and income levels in the dataset, shifting its feature distributions relative to other boroughs.
+
+**Recommendation:** Do not use this model to deprioritize or delay responses in Saint-Laurent. A borough-specific model or dedicated monitoring system is required before operational deployment.
 
 ---
 
 ## 🛠️ Tech Stack
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-1.3+-orange)
-![SQLite](https://img.shields.io/badge/SQLite-database-lightgrey)
-![FLAML](https://img.shields.io/badge/FLAML-AutoML-green)
-![Pandas](https://img.shields.io/badge/Pandas-latest-lightgrey)
-
-- **Language:** Python 3.10+
-- **Database:** SQLite (5 relational tables, ~101K rows)
-- **Libraries:** pandas, numpy, scikit-learn, matplotlib, seaborn, FLAML
-- **Modeling:** sklearn Pipeline with ColumnTransformer, TimeSeriesSplit, RandomizedSearchCV
-
----
-
-## 📁 Project Structure
-
-```
-municipal-service-delay-prediction/
-│
-├── municipal_service_delay_diagnostics.ipynb   # Full 14-phase ML pipeline
-├── municipal_service_diagnostics.db # SQLite database (5 tables)
-├── Municipal_Service_Report.pdf     # Full diagnostic report
-├── requirements.txt                 # Dependencies
-└── README.md                        # This file
-```
-
----
-
-## 🚀 How to Run
-
-```bash
-# 1. Clone the repo
-git clone https://github.com/Samahdata/municipal-service-delay-prediction.git
-cd municipal-service-delay-prediction
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run the notebook
-jupyter notebook municipal_service_delay_diagnostics.ipynb
-```
-
-> ⚠️ The database file `municipal_service_diagnostics.db` must be in the same directory as the notebook.  
-> Headline F1 should reproduce within ±0.01.
-
----
-
-## ⚠️ Limitations & Deployment Risks
-
-- **Concept drift:** Trained on 18 months of data. Recommend retraining every 6 months.
-- **Weather leakage:** Daily weather totals are a pragmatic approximation — replace with morning readings in production.
-- **Precision constraint:** ~33% precision means 66% of flagged requests are false alarms. Human review required.
-- **Saint-Laurent blind spot:** Borough requires dedicated monitoring or a separate model.
+| Category | Tools |
+|---|---|
+| Language | Python |
+| Database | SQLite (5 relational tables) |
+| ML Libraries | Scikit-learn, FLAML (AutoML) |
+| Models | Logistic Regression, Random Forest, MLP, XGBoost |
+| Pipeline | sklearn Pipeline + ColumnTransformer |
+| Validation | TimeSeriesSplit, cross-validation |
+| Visualization | Matplotlib, Seaborn |
 
 ---
 
 ## 👤 Author
 
-**Samah Sayed** — Data Scientist | AI & Automation  
-[LinkedIn](https://www.linkedin.com/in/samahsayed55) · [GitHub](https://github.com/Samahdata) · samah.sayed055@gmail.com
+**Samah Sayed** — Junior Data Scientist  
+15+ years domain expertise in aviation, finance & public services  
+📍 Quebec, Canada | [LinkedIn](https://www.linkedin.com/in/samah-sayed55) | [GitHub Portfolio](https://github.com/Samahdata)
