@@ -73,7 +73,7 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 
 ## 📊 Model Comparison
 
-![Model Comparison Chart](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/3#issue-4707284434)
+![Model Comparison Chart](model_comparison_chart.png)
 
 | Model | F1 (Late Class) | Recall | Notes |
 |---|---|---|---|
@@ -89,13 +89,12 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 
 ## ✅ Best Model — Confusion Matrix (Phase 9)
 
-![Confusion Matrix](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/1#issue-4707246136)
-
+![Confusion Matrix](Confusion matrix.png)
 ---
 
 ## ⚖️ Fairness Analysis — Borough Level (Phase 11)
 
-![Borough Fairness Analysis](https://github.com/Samahdata/Municipal-Service-Delay-Diagnostics/issues/2#issue-4707249164)
+![Borough Fairness Analysis](Fairness Diagnosis.png)
 
 | Borough | Recall | F1 | Flag |
 |---|---|---|---|
