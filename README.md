@@ -87,7 +87,7 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 
 ---
 
-## ✅ Best Model — Confusion Matrix (Phase 9)
+✅ Best Model — Confusion Matrix (Phase 9)
 
 ![Confusion Matrix](Confusion matrix.png)
 
