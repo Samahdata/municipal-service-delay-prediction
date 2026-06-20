@@ -92,6 +92,7 @@ Without this audit, inflated F1 scores would have produced an **undeployable mod
 ![Confusion Matrix](Confusion_matrix.png)
 
 The model correctly identified 2,464 true delays (true positives) while missing 2,276 (false negatives) — Recall of 54%
+
 ---
 
 ## ⚖️ Fairness Analysis — Borough Level (Phase 11)
